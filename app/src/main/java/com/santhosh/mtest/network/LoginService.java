@@ -22,9 +22,9 @@ public interface LoginService {
     @POST("auth")
     Single<LoginResponse> login(@Body LoginUser user);
 
-    @PATCH("user")
-    Single<User> update( @Header("Authorization") String token, @Body User user);
+    @PATCH("users/{id}")
+    Single<User> update( @Header("Authorization") String token, @Path("id") int userId,@Body User user);
 
-    @GET("user/{id}")
+    @GET("users/{id}")
     Single<User> getUser(@Header("Authorization") String token,@Path("id") int userId);
 }

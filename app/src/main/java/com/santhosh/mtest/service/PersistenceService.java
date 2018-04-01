@@ -51,11 +51,8 @@ public class PersistenceService extends Service{
             Integer id = userNameToIdMap.get(userName);
             loginService.getUser("JWT "+token, id)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe((user) -> {
-                        userNameToTokenMap.put(userName,token);
-                        handleAuthResponse(callBack, token);
-                    },(ignored)->
-                            handleAuthResponse(callBack,null));
+                    .subscribe((createduser)->handleCreateUserResponse(callBack,createduser),(ignored)
+                            ->handleCreateUserResponse(callBack,null));
         }
 
         @Override
@@ -101,7 +98,7 @@ public class PersistenceService extends Service{
         @Override
         public void updateUser(User user, IPersistenceInterfaceCallBack callBack) throws RemoteException {
             String token = userNameToTokenMap.get(user.username);
-            loginService.update("JWT "+token,user)
+            loginService.update("JWT "+token,user.id,user)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((createduser)->handleCreateUserResponse(callBack,createduser),(ignored)
                             ->handleCreateUserResponse(callBack,null));

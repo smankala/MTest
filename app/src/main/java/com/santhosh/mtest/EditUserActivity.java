@@ -21,29 +21,27 @@ import android.widget.Toast;
 public class EditUserActivity extends AppCompatActivity {
 
     private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
     private EditText mHeightView;
     private EditText mAgeView;
     private View mProgressView;
     private View mLoginFormView;
     String username;
     String token;
-    String userId;
+    int userId;
+    Button mEmailSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_edit);
         username = getIntent().getExtras().getString(LoginSuccessActivity.USER_NAME);
         token = getIntent().getExtras().getString(LoginSuccessActivity.TOKEN);
-        userId = getIntent().getExtras().getString(LoginSuccessActivity.USERID);
+        userId = getIntent().getExtras().getInt(LoginSuccessActivity.USERID);
 
-        // Set up the login form.
         mEmailView =  findViewById(R.id.email);
         mEmailView.setEnabled(false);
         mHeightView =  (EditText) findViewById(R.id.height);
         mAgeView = (EditText) findViewById(R.id.age);
-        mPasswordView =  (EditText) findViewById(R.id.password);
 
         mAgeView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -56,7 +54,7 @@ public class EditUserActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.create_account);
+        mEmailSignInButton = (Button) findViewById(R.id.create_account);
         mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +64,7 @@ public class EditUserActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        setUpData();
     }
 
 
@@ -83,10 +82,12 @@ public class EditUserActivity extends AppCompatActivity {
                                 Toast.makeText(EditUserActivity.this, "Failed to fetch user", Toast
                                         .LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(EditUserActivity.this, "Succesfully created user.Please Login", Toast.LENGTH_SHORT)
+                                Toast.makeText(EditUserActivity.this, "Succesfully Fetched user.Please Login", Toast
+                                        .LENGTH_SHORT)
                                         .show();
-                                Intent intent = new Intent(EditUserActivity.this,LoginActivity.class);
-                                startActivity(intent);
+                                mEmailView.setText(user.username);
+                                mHeightView.setText(String.valueOf(user.height));
+                                mAgeView.setText(String.valueOf(user.age));
                             }
                         }
                     });
@@ -101,34 +102,14 @@ public class EditUserActivity extends AppCompatActivity {
 
         // Reset errors.
         mEmailView.setError(null);
-        mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
         String age = mAgeView.getText().toString();
         String height = mHeightView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
 
         if (TextUtils.isEmpty(height)) {
             mHeightView.setError(getString(R.string.error_field_required));
@@ -144,7 +125,7 @@ public class EditUserActivity extends AppCompatActivity {
             mAgeView.setError(getString(R.string.error_field_required));
             focusView = mAgeView;
             cancel = true;
-        } else if (!isAgeValid(email)) {
+        } else if (!isAgeValid(age)) {
             mAgeView.setError(getString(R.string.error_invalid_age));
             focusView = mAgeView;
             cancel = true;
@@ -159,12 +140,12 @@ public class EditUserActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             User user = new User();
+            user.id = userId;
             user.username = email;
-            user.password = password;
             user.height = Integer.parseInt(height);
             user.age = Integer.parseInt(age);
             try {
-                ((MTestApplication) getApplication()).getPersistenceService().createUser(user,
+                ((MTestApplication) getApplication()).getPersistenceService().updateUser(user,
                         new IPersistenceInterfaceCallBack.Stub() {
                             @Override
                             public void handleLoginResponse(String token) throws RemoteException {
@@ -172,16 +153,17 @@ public class EditUserActivity extends AppCompatActivity {
 
                             @Override
                             public void handleUserUpdate(User user) throws RemoteException {
+                                showProgress(false);
                                 if (user == null) {
                                     Toast.makeText(EditUserActivity.this, "Failed to create user", Toast
                                             .LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(EditUserActivity.this, "Succesfully fetched user.Please Login",
+                                    Toast.makeText(EditUserActivity.this, "Succesfully Updated user",
                                             Toast
                                             .LENGTH_SHORT).show();
-                                    mEmailView.setText(user.username);
-                                    mAgeView.setText(user.age);
-                                    mHeightView.setText(user.height);
+                                    mHeightView.setEnabled(false);
+                                    mAgeView.setEnabled(false);
+                                    mEmailSignInButton.setVisibility(View.GONE);
                                 }
                             }
                         });

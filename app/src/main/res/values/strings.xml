@@ -17,4 +17,6 @@
   <string name="action_createaccount">Create Account</string>
   <string name="age_in_years">Age in years</string>
   <string name="height_in_cms">height</string>
+  <string name="action_update">Update</string>
+  <string name="action_edit">Edit user Info</string>
 </resources>

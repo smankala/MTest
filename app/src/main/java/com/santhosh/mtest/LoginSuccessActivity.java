@@ -34,8 +34,8 @@ public class LoginSuccessActivity  extends AppCompatActivity {
         tokenView = findViewById(R.id.token);
         editButton = findViewById(R.id.edit);
         editButton.setVisibility(View.GONE);
-        userNameView.setText("UserName: "+userNameView.getText().toString());
-        tokenView.setText("Token: "+tokenView.getText().toString());
+        userNameView.setText("UserName: "+username);
+        tokenView.setText("Token: "+token);
     }
 
 
