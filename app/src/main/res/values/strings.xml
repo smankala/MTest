@@ -1,0 +1,20 @@
+<resources>
+  <string name="app_name">mtest</string>
+
+  <!-- Strings related to login -->
+  <string name="prompt_email">Email</string>
+  <string name="prompt_password">Password</string>
+  <string name="action_sign_in">Sign in</string>
+  <string name="action_sign_in_short">Sign in</string>
+  <string name="error_invalid_email">This email address is invalid</string>
+  <string name="error_invalid_height">This height value is invalid</string>
+  <string name="error_invalid_age">This age value is invalid</string>
+  <string name="error_invalid_password">This password is too short</string>
+  <string name="error_incorrect_password">This password is incorrect</string>
+  <string name="error_field_required">This field is required</string>
+  <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+  <string name="action_signup">Register</string>
+  <string name="action_createaccount">Create Account</string>
+  <string name="age_in_years">Age in years</string>
+  <string name="height_in_cms">height</string>
+</resources>
